@@ -4,6 +4,7 @@ import Login from "../pages/Login"
 import Register from "../pages/Register"
 import Dashboard from "../pages/Dashboard"
 import ProtectedRoute from "../components/ProtectedRoute"
+import Admin from "../pages/Admin"
 
 function AppRoutes() {
 
@@ -17,7 +18,15 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
-
+        
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={
