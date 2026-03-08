@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Home from "../pages/Home"
 import Login from "../pages/Login"
+import ChangePassword from "../pages/ChangePassword"
 import Register from "../pages/Register"
 import Dashboard from "../pages/Dashboard"
 import ProtectedRoute from "../components/ProtectedRoute"
@@ -18,6 +19,7 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         
         <Route
           path="/admin"

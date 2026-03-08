@@ -1,20 +1,16 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
 import AuthService from "../services/authService"
 
-function Register() {
-
-  const navigate = useNavigate()
+function ChangePassword() {
 
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    cpf: "",
-    password: ""
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: ""
   })
 
-  const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleChange = (e) => {
 
@@ -35,16 +31,22 @@ function Register() {
       setLoading(true)
       setError(null)
 
-      await AuthService.register(formData)
+      await AuthService.changePassword(formData)
 
-      navigate("/login")
+      alert("Senha alterada com sucesso")
+
+      setFormData({
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: ""
+      })
 
     } catch (err) {
 
       if (err.response?.data?.message) {
         setError(err.response.data.message)
       } else {
-        setError("Erro ao cadastrar usuário")
+        setError("Erro ao alterar senha")
       }
 
     } finally {
@@ -57,56 +59,45 @@ function Register() {
 
     <div>
 
-      <h1>Criar Conta</h1>
+      <h1>Alterar Senha</h1>
 
       <form onSubmit={handleSubmit}>
 
         <div>
-          <label>Nome</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label>CPF</label>
-          <input
-            type="text"
-            name="cpf"
-            value={formData.cpf}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label>Senha</label>
+          <label>Senha atual</label>
           <input
             type="password"
-            name="password"
-            value={formData.password}
+            name="currentPassword"
+            value={formData.currentPassword}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div>
+          <label>Nova senha</label>
+          <input
+            type="password"
+            name="newPassword"
+            value={formData.newPassword}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div>
+          <label>Confirmar nova senha</label>
+          <input
+            type="password"
+            name="confirmNewPassword"
+            value={formData.confirmNewPassword}
             onChange={handleChange}
             required
           />
         </div>
 
         <button type="submit" disabled={loading}>
-          {loading ? "Cadastrando..." : "Cadastrar"}
+          {loading ? "Alterando..." : "Alterar senha"}
         </button>
 
       </form>
@@ -118,4 +109,4 @@ function Register() {
   )
 }
 
-export default Register
+export default ChangePassword

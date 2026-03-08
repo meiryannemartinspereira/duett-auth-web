@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react"
-import api from "../services/api"
+import { useNavigate } from "react-router-dom"
+import AuthService from "../services/authService"
 
 function Dashboard() {
+
+  const navigate = useNavigate()
 
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -14,23 +17,25 @@ function Dashboard() {
 
     try {
 
-      const token = localStorage.getItem("accessToken")
+      const data = await AuthService.getCurrentUser()
 
-      const response = await api.get("/auth/me", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      setUser(response.data)
+      setUser(data)
 
     } catch (error) {
 
-      console.error("Erro ao buscar usuário:", error)
+      console.error(error)
 
     } finally {
       setLoading(false)
     }
+
+  }
+
+  const handleLogout = async () => {
+
+    await AuthService.logout()
+
+    navigate("/login")
   }
 
   if (loading) return <p>Carregando...</p>
@@ -54,6 +59,10 @@ function Dashboard() {
         </div>
 
       )}
+
+      <button onClick={handleLogout}>
+        Logout
+      </button>
 
     </div>
 

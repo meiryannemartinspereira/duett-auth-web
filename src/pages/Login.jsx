@@ -1,60 +1,96 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import api from "../services/api"
+import AuthService from "../services/authService"
 
 function Login() {
 
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
   const navigate = useNavigate()
 
-  async function handleLogin(e) {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  })
+
+  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = (e) => {
+
+    const { name, value } = e.target
+
+    setFormData({
+      ...formData,
+      [name]: value
+    })
+  }
+
+  const handleSubmit = async (e) => {
+
     e.preventDefault()
 
     try {
-      const response = await api.post("/auth/authenticate", {
-        email,
-        password
-      })
 
-      localStorage.setItem("accessToken", response.data.accessToken)
-      localStorage.setItem("refreshToken", response.data.refreshToken)
+      setLoading(true)
+      setError(null)
+
+      await AuthService.login(formData)
 
       navigate("/dashboard")
 
-    } catch (error) {
-      console.error("LOGIN ERROR:", error)
+    } catch (err) {
+
+      if (err.response?.data?.message) {
+        setError(err.response.data.message)
+      } else {
+        setError("Erro ao fazer login")
+      }
+
+    } finally {
+      setLoading(false)
     }
+
   }
 
   return (
+
     <div>
+
       <h1>Login</h1>
 
-      <form onSubmit={handleLogin}>
+      <form onSubmit={handleSubmit}>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        <div>
+          <label>Email</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <br /><br />
+        <div>
+          <label>Senha</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <br /><br />
-
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Entrando..." : "Entrar"}
+        </button>
 
       </form>
+
+      {error && <p>{error}</p>}
+
     </div>
+
   )
 }
 
