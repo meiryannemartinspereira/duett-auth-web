@@ -110,14 +110,11 @@ function Admin() {
           <thead style={{ background: "#f4f4f4" }}>
 
             <tr>
-
-              <th style={thStyle}>ID</th>
               <th style={thStyle}>Nome</th>
               <th style={thStyle}>Email</th>
               <th style={thStyle}>CPF</th>
               <th style={thStyle}>Perfil</th>
               <th style={thStyle}>Ações</th>
-
             </tr>
 
           </thead>
@@ -126,7 +123,7 @@ function Admin() {
 
             {users.length === 0 && (
               <tr>
-                <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>
+                <td colSpan="5" style={{ textAlign: "center", padding: "20px" }}>
                   Nenhum usuário encontrado
                 </td>
               </tr>
@@ -136,7 +133,6 @@ function Admin() {
 
               <tr key={user.id} style={{ borderTop: "1px solid #eee" }}>
 
-                <td style={tdStyle}>{user.id}</td>
                 <td style={tdStyle}>{user.name}</td>
                 <td style={tdStyle}>{user.email}</td>
                 <td style={tdStyle}>{user.cpf}</td>
