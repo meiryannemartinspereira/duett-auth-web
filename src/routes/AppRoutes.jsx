@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Home from "../pages/Home"
 import Login from "../pages/Login"
 import ChangePassword from "../pages/ChangePassword"
@@ -14,12 +14,27 @@ function AppRoutes() {
 
       <Routes>
 
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/login" />} />
 
         <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
-        <Route path="/change-password" element={<ChangePassword />} />
+
+        <Route
+          path="/home"
+          element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+          } />
+  
+        <Route
+          path="/change-password"
+          element={
+          <ProtectedRoute>
+            <ChangePassword />
+          </ProtectedRoute>
+          } />
         
         <Route
           path="/admin"
