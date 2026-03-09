@@ -1,5 +1,6 @@
 import { useState } from "react"
 import AuthService from "../services/authService"
+import { validateChangePassword } from "../utils/validators"
 
 function ChangePassword() {
 
@@ -9,6 +10,7 @@ function ChangePassword() {
     confirmNewPassword: ""
   })
 
+  const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -26,10 +28,18 @@ function ChangePassword() {
 
     e.preventDefault()
 
+    const validationErrors = validateChangePassword(formData)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
+    }
+
     try {
 
       setLoading(true)
       setError(null)
+      setErrors({})
 
       await AuthService.changePassword(formData)
 
@@ -70,8 +80,8 @@ function ChangePassword() {
             name="currentPassword"
             value={formData.currentPassword}
             onChange={handleChange}
-            required
           />
+          {errors.currentPassword && <p style={{color:"red"}}>{errors.currentPassword}</p>}
         </div>
 
         <div>
@@ -81,8 +91,8 @@ function ChangePassword() {
             name="newPassword"
             value={formData.newPassword}
             onChange={handleChange}
-            required
           />
+          {errors.newPassword && <p style={{color:"red"}}>{errors.newPassword}</p>}
         </div>
 
         <div>
@@ -92,8 +102,8 @@ function ChangePassword() {
             name="confirmNewPassword"
             value={formData.confirmNewPassword}
             onChange={handleChange}
-            required
           />
+          {errors.confirmNewPassword && <p style={{color:"red"}}>{errors.confirmNewPassword}</p>}
         </div>
 
         <button type="submit" disabled={loading}>

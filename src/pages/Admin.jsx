@@ -36,6 +36,7 @@ function Admin() {
       setLoading(false)
 
     }
+
   }
 
   const deleteUser = async (id) => {
@@ -62,62 +63,112 @@ function Admin() {
       alert("Erro ao deletar usuário")
 
     }
+
   }
 
-  if (loading) return <p>Carregando...</p>
+  if (loading) {
+    return (
+      <div style={{ padding: "40px", textAlign: "center" }}>
+        <h2>Carregando usuários...</h2>
+      </div>
+    )
+  }
 
   return (
 
-    <div>
+    <div style={{ padding: "40px", maxWidth: "1100px", margin: "0 auto" }}>
 
-      <h1>Painel Administrativo</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
 
-      <button onClick={() => setIsModalOpen(true)}>
-        Criar Admin
-      </button>
+        <h1>Painel Administrativo</h1>
 
-      <h2>Usuários cadastrados</h2>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          style={{
+            padding: "10px 18px",
+            backgroundColor: "#2563eb",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+        >
+          Criar Admin
+        </button>
 
-      <table border="1">
+      </div>
 
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Email</th>
-            <th>CPF</th>
-            <th>Perfil</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
+      <div style={{
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        overflow: "hidden"
+      }}>
 
-        <tbody>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
 
-          {users.map((user) => (
+          <thead style={{ background: "#f4f4f4" }}>
 
-            <tr key={user.id}>
+            <tr>
 
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.cpf}</td>
-              <td>{user.role}</td>
-
-              <td>
-
-                <button onClick={() => deleteUser(user.id)}>
-                  Deletar
-                </button>
-
-              </td>
+              <th style={thStyle}>ID</th>
+              <th style={thStyle}>Nome</th>
+              <th style={thStyle}>Email</th>
+              <th style={thStyle}>CPF</th>
+              <th style={thStyle}>Perfil</th>
+              <th style={thStyle}>Ações</th>
 
             </tr>
 
-          ))}
+          </thead>
 
-        </tbody>
+          <tbody>
 
-      </table>
+            {users.length === 0 && (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center", padding: "20px" }}>
+                  Nenhum usuário encontrado
+                </td>
+              </tr>
+            )}
+
+            {users.map((user) => (
+
+              <tr key={user.id} style={{ borderTop: "1px solid #eee" }}>
+
+                <td style={tdStyle}>{user.id}</td>
+                <td style={tdStyle}>{user.name}</td>
+                <td style={tdStyle}>{user.email}</td>
+                <td style={tdStyle}>{user.cpf}</td>
+                <td style={tdStyle}>{user.role}</td>
+
+                <td style={tdStyle}>
+
+                  <button
+                    onClick={() => deleteUser(user.id)}
+                    style={{
+                      padding: "6px 12px",
+                      backgroundColor: "#dc2626",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer"
+                    }}
+                  >
+                    Deletar
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+      </div>
 
       <CreateAdminModal
         isOpen={isModalOpen}
@@ -126,7 +177,21 @@ function Admin() {
       />
 
     </div>
+
   )
+
+}
+
+const thStyle = {
+  padding: "12px",
+  textAlign: "left",
+  fontWeight: "bold",
+  fontSize: "14px"
+}
+
+const tdStyle = {
+  padding: "12px",
+  fontSize: "14px"
 }
 
 export default Admin

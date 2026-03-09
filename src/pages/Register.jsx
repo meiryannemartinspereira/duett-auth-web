@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import AuthService from "../services/authService"
+import { cpfMask } from "../utils/cpfMask"
+import { validateRegister } from "../utils/validators"
 
 function Register() {
 
@@ -13,12 +15,17 @@ function Register() {
     password: ""
   })
 
+  const [errors, setErrors] = useState({})
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
 
-    const { name, value } = e.target
+    let { name, value } = e.target
+
+    if (name === "cpf") {
+      value = cpfMask(value)
+    }
 
     setFormData({
       ...formData,
@@ -30,10 +37,18 @@ function Register() {
 
     e.preventDefault()
 
+    const validationErrors = validateRegister(formData)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
+    }
+
     try {
 
       setLoading(true)
       setError(null)
+      setErrors({})
 
       await AuthService.register(formData)
 
@@ -68,8 +83,8 @@ function Register() {
             name="name"
             value={formData.name}
             onChange={handleChange}
-            required
           />
+          {errors.name && <p style={{color:"red"}}>{errors.name}</p>}
         </div>
 
         <div>
@@ -79,8 +94,8 @@ function Register() {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            required
           />
+          {errors.email && <p style={{color:"red"}}>{errors.email}</p>}
         </div>
 
         <div>
@@ -90,8 +105,8 @@ function Register() {
             name="cpf"
             value={formData.cpf}
             onChange={handleChange}
-            required
           />
+          {errors.cpf && <p style={{color:"red"}}>{errors.cpf}</p>}
         </div>
 
         <div>
@@ -101,8 +116,8 @@ function Register() {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            required
           />
+          {errors.password && <p style={{color:"red"}}>{errors.password}</p>}
         </div>
 
         <button type="submit" disabled={loading}>
