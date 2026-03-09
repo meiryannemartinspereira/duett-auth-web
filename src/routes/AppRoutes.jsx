@@ -6,6 +6,7 @@ import Register from "../pages/Register"
 import Dashboard from "../pages/Dashboard"
 import ProtectedRoute from "../components/ProtectedRoute"
 import Admin from "../pages/Admin"
+import AppLayout from "../layouts/AppLayout"
 
 function AppRoutes() {
 
@@ -21,10 +22,14 @@ function AppRoutes() {
 
         <Route element={<ProtectedRoute />}>
 
-          <Route path="/home" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/change-password" element={<ChangePassword />} />
+          <Route element={<AppLayout />}>
+
+            <Route path="/home" element={<Home />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/change-password" element={<ChangePassword />} />
+
+          </Route>
 
         </Route>
 

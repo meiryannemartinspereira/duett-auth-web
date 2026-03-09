@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import AuthService from "../services/authService"
 
 function Dashboard() {
+
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -22,11 +23,6 @@ function Dashboard() {
     }
   }
 
-  const handleLogout = async () => {
-    await AuthService.logout()
-    navigate("/login")
-  }
-
   const goToAdmin = () => {
     navigate("/admin")
   }
@@ -35,26 +31,29 @@ function Dashboard() {
 
   return (
     <div style={containerStyle}>
+
       <div style={cardStyle}>
+
         <h1 style={titleStyle}>Dashboard</h1>
 
         {user && (
           <div style={userInfoStyle}>
-            <h2>Olá, {user.name} 👋</h2>
-            <p>Email: {user.email}</p>
-            <p>Perfil: {user.role}</p>
+            <h2 style={welcomeStyle}>Olá, {user.name} 👋</h2>
+            <p style={infoText}>Email: {user.email}</p>
+            <p style={infoText}>Perfil: {user.role}</p>
           </div>
         )}
 
-        <div style={buttonGroupStyle}>
-          <button style={adminButtonStyle} onClick={goToAdmin}>
-            Painel Administrativo
-          </button>
-          <button style={logoutButtonStyle} onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
+        {user?.role === "ADMIN" && (
+          <div style={buttonGroupStyle}>
+            <button style={adminButtonStyle} onClick={goToAdmin}>
+              Painel Administrativo
+            </button>
+          </div>
+        )}
+
       </div>
+
     </div>
   )
 }
@@ -63,52 +62,49 @@ const containerStyle = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  height: "100vh",
-  background: "#f5f5f5"
+  padding: "40px"
 }
 
 const cardStyle = {
-  background: "#fff",
+  background: "#ffffff",
   padding: "40px",
-  borderRadius: "8px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-  width: "400px",
-  textAlign: "center"
+  borderRadius: "10px",
+  boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
+  width: "420px"
 }
 
 const titleStyle = {
-  marginBottom: "24px"
+  marginBottom: "24px",
+  textAlign: "center"
+}
+
+const welcomeStyle = {
+  marginBottom: "12px"
 }
 
 const userInfoStyle = {
-  marginBottom: "32px",
-  textAlign: "left"
+  marginBottom: "30px"
+}
+
+const infoText = {
+  color: "#4b5563",
+  fontSize: "14px"
 }
 
 const buttonGroupStyle = {
   display: "flex",
-  justifyContent: "space-between",
-  gap: "16px"
+  marginTop: "20px"
 }
 
 const adminButtonStyle = {
-  flex: 1,
+  width: "100%",
   padding: "12px",
-  background: "#4f46e5",
-  color: "#fff",
+  background: "#2563eb",
+  color: "#ffffff",
   border: "none",
-  borderRadius: "4px",
-  cursor: "pointer"
-}
-
-const logoutButtonStyle = {
-  flex: 1,
-  padding: "12px",
-  background: "#e53e3e",
-  color: "#fff",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer"
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: "500"
 }
 
 const loadingStyle = {

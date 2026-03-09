@@ -15,7 +15,6 @@ function ChangePassword() {
   const [error, setError] = useState(null)
 
   const handleChange = (e) => {
-
     const { name, value } = e.target
 
     setFormData({
@@ -67,56 +66,123 @@ function ChangePassword() {
 
   return (
 
-    <div>
+    <div style={containerStyle}>
 
-      <h1>Alterar Senha</h1>
+      <div style={cardStyle}>
 
-      <form onSubmit={handleSubmit}>
+        <h1 style={titleStyle}>Alterar Senha</h1>
 
-        <div>
-          <label>Senha atual</label>
-          <input
-            type="password"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleChange}
-          />
-          {errors.currentPassword && <p style={{color:"red"}}>{errors.currentPassword}</p>}
-        </div>
+        <form onSubmit={handleSubmit} style={formStyle}>
 
-        <div>
-          <label>Nova senha</label>
-          <input
-            type="password"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleChange}
-          />
-          {errors.newPassword && <p style={{color:"red"}}>{errors.newPassword}</p>}
-        </div>
+          <div style={inputGroup}>
+            <label style={labelStyle}>Senha atual</label>
+            <input
+              style={inputStyle}
+              type="password"
+              name="currentPassword"
+              value={formData.currentPassword}
+              onChange={handleChange}
+            />
+            {errors.currentPassword && <p style={errorText}>{errors.currentPassword}</p>}
+          </div>
 
-        <div>
-          <label>Confirmar nova senha</label>
-          <input
-            type="password"
-            name="confirmNewPassword"
-            value={formData.confirmNewPassword}
-            onChange={handleChange}
-          />
-          {errors.confirmNewPassword && <p style={{color:"red"}}>{errors.confirmNewPassword}</p>}
-        </div>
+          <div style={inputGroup}>
+            <label style={labelStyle}>Nova senha</label>
+            <input
+              style={inputStyle}
+              type="password"
+              name="newPassword"
+              value={formData.newPassword}
+              onChange={handleChange}
+            />
+            {errors.newPassword && <p style={errorText}>{errors.newPassword}</p>}
+          </div>
 
-        <button type="submit" disabled={loading}>
-          {loading ? "Alterando..." : "Alterar senha"}
-        </button>
+          <div style={inputGroup}>
+            <label style={labelStyle}>Confirmar nova senha</label>
+            <input
+              style={inputStyle}
+              type="password"
+              name="confirmNewPassword"
+              value={formData.confirmNewPassword}
+              onChange={handleChange}
+            />
+            {errors.confirmNewPassword && <p style={errorText}>{errors.confirmNewPassword}</p>}
+          </div>
 
-      </form>
+          <button style={buttonStyle} type="submit" disabled={loading}>
+            {loading ? "Alterando..." : "Alterar senha"}
+          </button>
 
-      {error && <p>{error}</p>}
+        </form>
+
+        {error && <p style={errorText}>{error}</p>}
+
+      </div>
 
     </div>
 
   )
+}
+
+const containerStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "80vh"
+}
+
+const cardStyle = {
+  background: "#ffffff",
+  padding: "40px",
+  borderRadius: "8px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+  width: "400px"
+}
+
+const titleStyle = {
+  marginBottom: "24px",
+  textAlign: "center"
+}
+
+const formStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "18px"
+}
+
+const inputGroup = {
+  display: "flex",
+  flexDirection: "column"
+}
+
+const labelStyle = {
+  marginBottom: "6px",
+  fontWeight: "500"
+}
+
+const inputStyle = {
+  padding: "10px",
+  borderRadius: "6px",
+  border: "1px solid #d1d5db",
+  fontSize: "14px"
+}
+
+const buttonStyle = {
+  marginTop: "10px",
+  padding: "12px",
+  background: "#2563eb",
+  color: "#fff",
+  border: "none",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: "500"
+}
+
+const errorText = {
+  color: "#ef4444",
+  fontSize: "13px",
+  marginTop: "4px"
 }
 
 export default ChangePassword
