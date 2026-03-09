@@ -1,14 +1,13 @@
-import { Navigate } from "react-router-dom"
+import { Navigate, Outlet } from "react-router-dom"
+import AuthService from "../services/authService"
 
-function ProtectedRoute({ children }) {
+function ProtectedRoute() {
 
-  const token = localStorage.getItem("accessToken")
-
-  if (!token) {
+  if (!AuthService.isAuthenticated()) {
     return <Navigate to="/login" />
   }
 
-  return children
+  return <Outlet />
 }
 
 export default ProtectedRoute

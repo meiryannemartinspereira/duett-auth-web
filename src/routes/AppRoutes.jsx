@@ -17,41 +17,18 @@ function AppRoutes() {
         <Route path="/" element={<Navigate to="/login" />} />
 
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
-        <Route
-          path="/home"
-          element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-          } />
-  
-        <Route
-          path="/change-password"
-          element={
-          <ProtectedRoute>
-            <ChangePassword />
-          </ProtectedRoute>
-          } />
-        
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <Admin />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route element={<ProtectedRoute />}>
+
+          <Route path="/home" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+
+        </Route>
+
+        <Route path="*" element={<Navigate to="/login" />} />
 
       </Routes>
 

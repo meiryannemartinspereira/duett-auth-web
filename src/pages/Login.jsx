@@ -51,7 +51,7 @@ function Login() {
       if (decoded?.role === "ROLE_ADMIN") {
         navigate("/dashboard")
       } else {
-        navigate("/")
+        navigate("/home")
       }
 
     } catch (err) {
