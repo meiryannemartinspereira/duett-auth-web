@@ -1,10 +1,9 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import AuthService from "../services/authService"
 import { validateLogin } from "../utils/validators"
 
 function Login() {
-
   const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
@@ -17,91 +16,149 @@ function Login() {
   const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
-
     const { name, value } = e.target
-
     setFormData({
       ...formData,
       [name]: value
     })
   }
 
-  const handleSubmit = async (e) => {
+  const decodeJWT = (token) => {
+    try {
+      return JSON.parse(atob(token.split(".")[1]))
+    } catch {
+      return null
+    }
+  }
 
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     const validationErrors = validateLogin(formData)
-
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors)
       return
     }
 
     try {
-
       setLoading(true)
       setError(null)
       setErrors({})
 
-      await AuthService.login(formData)
+      const userData = await AuthService.login(formData)
+      const decoded = decodeJWT(userData.accessToken)
 
-      navigate("/dashboard")
+      if (decoded?.role === "ROLE_ADMIN") {
+        navigate("/dashboard")
+      } else {
+        navigate("/")
+      }
 
     } catch (err) {
-
       if (err.response?.data?.message) {
         setError(err.response.data.message)
       } else {
         setError("Erro ao fazer login")
       }
-
     } finally {
       setLoading(false)
     }
-
   }
 
   return (
+    <div style={containerStyle}>
+      <div style={formWrapperStyle}>
+        <h1 style={titleStyle}>Login</h1>
 
-    <div>
+        <form onSubmit={handleSubmit} style={formStyle}>
+          <div style={fieldStyle}>
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            {errors.email && <p style={errorStyle}>{errors.email}</p>}
+          </div>
 
-      <h1>Login</h1>
+          <div style={fieldStyle}>
+            <label>Senha</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            {errors.password && <p style={errorStyle}>{errors.password}</p>}
+          </div>
 
-      <form onSubmit={handleSubmit}>
+          <button type="submit" disabled={loading} style={buttonStyle}>
+            {loading ? "Entrando..." : "Entrar"}
+          </button>
 
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {errors.email && <p style={{color:"red"}}>{errors.email}</p>}
-        </div>
+          {error && <p style={errorStyle}>{error}</p>}
+        </form>
 
-        <div>
-          <label>Senha</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          {errors.password && <p style={{color:"red"}}>{errors.password}</p>}
-        </div>
-
-        <button type="submit" disabled={loading}>
-          {loading ? "Entrando..." : "Entrar"}
-        </button>
-
-      </form>
-
-      {error && <p>{error}</p>}
-
+        <p style={registerTextStyle}>
+          Não tem uma conta? <Link to="/register">Registrar-se</Link>
+        </p>
+      </div>
     </div>
-
   )
+}
+
+const containerStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "100vh",
+  background: "#f5f5f5"
+}
+
+const formWrapperStyle = {
+  background: "#fff",
+  padding: "40px",
+  borderRadius: "8px",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+  width: "350px",
+  textAlign: "center"
+}
+
+const titleStyle = {
+  marginBottom: "24px"
+}
+
+const formStyle = {
+  display: "flex",
+  flexDirection: "column",
+  gap: "16px"
+}
+
+const fieldStyle = {
+  display: "flex",
+  flexDirection: "column",
+  textAlign: "left"
+}
+
+const buttonStyle = {
+  padding: "12px",
+  background: "#4f46e5",
+  color: "#fff",
+  border: "none",
+  borderRadius: "4px",
+  cursor: "pointer"
+}
+
+const errorStyle = {
+  color: "red",
+  fontSize: "14px",
+  marginTop: "4px"
+}
+
+const registerTextStyle = {
+  marginTop: "16px",
+  fontSize: "14px"
 }
 
 export default Login

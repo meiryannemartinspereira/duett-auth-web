@@ -94,7 +94,7 @@ function Admin() {
             fontWeight: "bold"
           }}
         >
-          Criar Admin
+          Adicionar usuário
         </button>
 
       </div>
