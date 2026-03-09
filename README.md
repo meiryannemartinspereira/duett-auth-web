@@ -4,6 +4,13 @@ Interface web do sistema **Duett Auth**, responsável pelo fluxo completo de aut
 
 O frontend consome a **Duett Auth API** e implementa autenticação baseada em **JWT**, proteção de rotas e controle de acesso por perfil (**USER / ADMIN**).
 
+**Disponível** : https://duett-auth-web.onrender.com
+
+Usuário criado padrão para teste -
+  email: admin@admin.com
+  password: admin123
+
+
 ---
 
 # 🔹 Tecnologias
