@@ -1,8 +1,8 @@
 import { useState } from "react"
 import api from "../services/api"
+import { cpfMask } from "../utils/cpfMask"
 
 function CreateAdminModal({ isOpen, onClose, refreshUsers }) {
-
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,116 +16,78 @@ function CreateAdminModal({ isOpen, onClose, refreshUsers }) {
   if (!isOpen) return null
 
   const validate = () => {
-
     const newErrors = {}
 
-    if (formData.name.trim().length < 3) {
-      newErrors.name = "Nome deve ter pelo menos 3 caracteres"
-    }
+    if (formData.name.trim().length < 3) newErrors.name = "Nome deve ter pelo menos 3 caracteres"
 
     const emailRegex = /\S+@\S+\.\S+/
-    if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Email inválido"
-    }
+    if (!emailRegex.test(formData.email)) newErrors.email = "Email inválido"
 
+    const cpfNumbersOnly = formData.cpf.replace(/\D/g, "")
     const cpfRegex = /^\d{11}$/
-    if (!cpfRegex.test(formData.cpf)) {
-      newErrors.cpf = "CPF deve conter 11 números"
-    }
+    if (!cpfRegex.test(cpfNumbersOnly)) newErrors.cpf = "CPF deve conter 11 números"
 
-    if (formData.password.length < 6) {
-      newErrors.password = "Senha deve ter no mínimo 6 caracteres"
-    }
+    if (formData.password.length < 6) newErrors.password = "Senha deve ter no mínimo 6 caracteres"
 
     setErrors(newErrors)
-
     return Object.keys(newErrors).length === 0
   }
 
   const handleChange = (e) => {
-
     const { name, value } = e.target
-
+    let formattedValue = value
+    if (name === "cpf") formattedValue = cpfMask(value)
     setFormData({
       ...formData,
-      [name]: value
+      [name]: formattedValue
     })
-
     setErrors(prev => ({
       ...prev,
       [name]: ""
     }))
-
   }
 
   const createAdmin = async (e) => {
-
     e.preventDefault()
-
     if (!validate()) return
 
     try {
-
       setLoading(true)
-
       const token = localStorage.getItem("accessToken")
-
-      await api.post("/admin/users/admin", formData, {
+      await api.post("/admin/users/admin", {
+        ...formData,
+        cpf: formData.cpf.replace(/\D/g, "")
+      }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
-
-      setFormData({
-        name: "",
-        email: "",
-        cpf: "",
-        password: ""
-      })
-
+      setFormData({ name: "", email: "", cpf: "", password: "" })
       setErrors({})
-
       refreshUsers()
       onClose()
-
     } catch (error) {
-
       const apiMessage = error?.response?.data?.message
-
       if (apiMessage) {
-
         setErrors(prev => ({
           ...prev,
           email: apiMessage.includes("Email") ? apiMessage : prev.email,
           cpf: apiMessage.includes("CPF") ? apiMessage : prev.cpf
         }))
-
       } else {
-
         alert("Erro ao criar admin")
-
       }
-
     } finally {
-
       setLoading(false)
-
     }
-
   }
 
   return (
-
     <div style={overlayStyle}>
-
       <div style={modalStyle}>
-
         <h2 style={titleStyle}>Criar novo ADMIN</h2>
-
         <form onSubmit={createAdmin} style={formStyle}>
-
           <div style={fieldContainer}>
-
             <input
               style={inputStyle}
               type="text"
@@ -134,13 +96,9 @@ function CreateAdminModal({ isOpen, onClose, refreshUsers }) {
               value={formData.name}
               onChange={handleChange}
             />
-
             {errors.name && <span style={errorText}>{errors.name}</span>}
-
           </div>
-
           <div style={fieldContainer}>
-
             <input
               style={inputStyle}
               type="email"
@@ -149,13 +107,9 @@ function CreateAdminModal({ isOpen, onClose, refreshUsers }) {
               value={formData.email}
               onChange={handleChange}
             />
-
             {errors.email && <span style={errorText}>{errors.email}</span>}
-
           </div>
-
           <div style={fieldContainer}>
-
             <input
               style={inputStyle}
               type="text"
@@ -164,13 +118,9 @@ function CreateAdminModal({ isOpen, onClose, refreshUsers }) {
               value={formData.cpf}
               onChange={handleChange}
             />
-
             {errors.cpf && <span style={errorText}>{errors.cpf}</span>}
-
           </div>
-
           <div style={fieldContainer}>
-
             <input
               style={inputStyle}
               type="password"
@@ -179,39 +129,18 @@ function CreateAdminModal({ isOpen, onClose, refreshUsers }) {
               value={formData.password}
               onChange={handleChange}
             />
-
             {errors.password && <span style={errorText}>{errors.password}</span>}
-
           </div>
-
           <div style={buttonsContainer}>
-
-            <button
-              type="button"
-              onClick={onClose}
-              style={cancelButton}
-            >
-              Cancelar
-            </button>
-
-            <button
-              type="submit"
-              disabled={loading}
-              style={createButton}
-            >
+            <button type="button" onClick={onClose} style={cancelButton}>Cancelar</button>
+            <button type="submit" disabled={loading} style={createButton}>
               {loading ? "Criando..." : "Criar Admin"}
             </button>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
-
   )
-
 }
 
 const overlayStyle = {
