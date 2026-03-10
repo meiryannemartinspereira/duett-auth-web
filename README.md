@@ -132,10 +132,4 @@ Responsável por:
 - Manter o código desacoplado
 - Evitar repetição de lógica de autenticação
 
----
 
-## Protected Routes
-
-Rotas privadas são protegidas por um **Auth Guard**.
-
-Usuários não autenticados são automaticamente redirecionados para:
